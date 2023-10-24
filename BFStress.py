@@ -1,0 +1,55 @@
+import matplotlib.pyplot as plt
+import numpy as np
+M=float(-10)
+b1=0.2
+b2=0.1
+b3=0.2
+h1=0.15
+h2=0.3
+h3=0.15
+h=h1+h2+h3
+A=[b1*h1,b2*h2,b3*h3]
+y=[h1/2,h1+(h2/2),h1+h2+(h3/2)]
+I=[b1*(h1**3)/12,b2*(h2**3)/12,b3*(h3**3)/12]
+if len(A) != len(y):
+    raise ValueError("Vector's need to have same length. Check!")
+Ay = []
+for i in range(len(A)):
+    Ay.append(A[i] * y[i])
+Xc= sum(Ay)/sum(A)
+#print("El centroide de la figura esta a "+str(Xc)+" m desde la cara inferior")
+d=[]
+for i in range(len(y)):
+    d.append(A[i]*(abs(y[i]-Xc))**2)
+Ic=sum(I)+sum(d)
+## plotear
+plt.style.use('_mpl-gallery')
+# make data
+x = np.linspace(0, h1+h2+h3, 100)
+print(x)
+Yi = np.zeros_like(x)
+S1 = np.zeros_like(x)
+S2 = np.zeros_like(x)
+
+Yi[(x<=Xc)&(x<=h1)] = Xc-x[(x<Xc)&(x<h1)]
+Yi[(x<=Xc)&(x>h1)] = Xc-x[(x<=Xc)&(x>h1)]
+Yi[(x>Xc)&(x<=(h1+h2))] = Xc-x[(x>Xc)&(x<=(h1+h2))]
+Yi[(x>Xc)&(x>(h1+h2))] = Xc-x[(x>Xc)&(x>(h1+h2))]
+
+S1[(x<=Xc)&(x<=h1)] = M*Yi[(x<=Xc)&(x<=h1)]/Ic
+S1[(x<=Xc)&(x>h1)] = M*Yi[(x<=Xc)&(x>h1)]/Ic
+S2[(x>Xc)&(x<=(h1+h2))] = M*Yi[(x>Xc)&(x<=(h1+h2))]/Ic
+S2[(x>Xc)&(x>(h1+h2))] = M*Yi[(x>Xc)&(x>(h1+h2))]/Ic
+plt.style.use("classic")
+plt.plot(S1, x, label='Axial Stress', linewidth=3,color='blue')
+plt.plot(S2, x, label='Axial Stress', linewidth=3,color='red')
+plt.xlabel('Axial stress [KPa]')
+plt.ylabel('Beam height [m]')
+plt.title('Axial stress distribution on Beam section')
+plt.grid(True)
+plt.legend()
+plt.gcf().set_size_inches(10,6)
+plt.fill_betweenx(x,0,S1,alpha=0.2,color='blue')
+plt.fill_betweenx(x,S2,h,alpha=0.2,color='red')
+#plt.fill(S,x)
+plt.show()
