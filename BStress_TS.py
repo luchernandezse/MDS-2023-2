@@ -4,24 +4,23 @@ V=float(10)
 M=float(10)
 print(type(V))
 #Los materiales van de abajo hacia arriba.
-b1=0.2
-b2=0.2
-b3=0.2
-h1=0.15
-h2=0.3
-h3=0.15
+b1=0.1
+b2=0.1
+b3=0.1
+h1=0.08
+h2=0.08
+h3=0.08
 h=h1+h2+h3
-E1=5000 #[Kpa]
-E2=5000 #[Kpa]
-E3=5000 #[Kpa]
-#Se transforma todo al materian 3
+E1=200000000 #[Kpa]
+E2=21500000 #[Kpa]
+E3=2000000000 #[Kpa]
+#Se transforma todo al material 3
 n1=E1/E3
 n2=E2/E3
 n3=E3/E3
 b1t=b1*n1
 b2t=b2*n2
 b3t=b3*n3
-
 A=[b1t*h1,b2t*h2,b3t*h3]
 y=[h1/2,h1+(h2/2),h1+h2+(h3/2)]
 I=[b1t*(h1**3)/12,b2t*(h2**3)/12,b3t*(h3**3)/12]
@@ -40,33 +39,35 @@ print("El centroide es "+str(Xc))
 print("La inercia es "+str(Ic))
 
 # make data
-x = np.linspace(0, h1+h2+h3, 100)
+x = np.linspace(0, h, 100)
 print(x)
 q = np.zeros_like(x)
 T = np.zeros_like(x)
 print(type(T))
-q[(x<=Xc)&(x<=h1)] = x[(x<Xc)&(x<h1)]*b1*(Xc-x[(x<Xc)&(x<h1)]/2)
-q[(x<=Xc)&(x>h1)] = h1*b1*(Xc-h1/2)+b2*(x[(x<Xc)&(x>h1)]-h1)*(Xc-h1-(x[(x<Xc)&(x>h1)]-h1)/2)
-q[(x>Xc)&(x<=(h1+h2))] = h3*b3*(h-Xc-h3/2)+b2*(h1+h2-x[(x>Xc)&(x<=(h1+h2))])*(h1+h2-Xc-((h1+h2-x[(x>Xc)&(x<=(h1+h2))])/2))
-q[(x>Xc)&(x>(h1+h2))] = b3*(h-x[(x>Xc)&(x>(h1+h2))])*(h-Xc-((h-x[(x>Xc)&(x>(h1+h2))])/2))
+q[(x<=Xc)&(x<=h1)] = x[(x<=Xc)&(x<=h1)]*b1t*(Xc-x[(x<=Xc)&(x<=h1)]/2)
+q[(x<=Xc)&(x>h1)] = h1*b1t*(Xc-h1/2)+b2t*(x[(x<=Xc)&(x>h1)]-h1)*(Xc-h1-(x[(x<=Xc)&(x>h1)]-h1)/2)
+q[(x>Xc)&(x<=(h1+h2))] = h3*b3t*(h-Xc-h3/2)+b2t*(h1+h2-x[(x>Xc)&(x<=(h1+h2))])*(h1+h2-Xc-((h1+h2-x[(x>Xc)&(x<=(h1+h2))])/2))
+q[(x>Xc)&(x>(h1+h2))] = b3t*(h-x[(x>Xc)&(x>(h1+h2))])*(h-Xc-((h-x[(x>Xc)&(x>(h1+h2))])/2))
 print(q)
-T[(x<=Xc)&(x<=h1)]=V*q[(x<=Xc)&(x<=h1)]/(Ic*b1)
-T[(x<=Xc)&(x>h1)]=V*q[(x<=Xc)&(x>h1)]/(Ic*b2)
-T[(x>Xc)&(x<=(h1+h2))]=V*q[(x>Xc)&(x<=(h1+h2))]/(Ic*b2)
-T[(x>Xc)&(x>(h1+h2))]=V*q[(x>Xc)&(x>(h1+h2))]/(Ic*b3)
+T[(x<=Xc)&(x<=h1)]=V*q[(x<=Xc)&(x<=h1)]*n1/(Ic*b1t)
+T[(x<=Xc)&(x>h1)]=V*q[(x<=Xc)&(x>h1)]*n2/(Ic*b2t)
+T[(x>Xc)&(x<=(h1+h2))]=V*q[(x>Xc)&(x<=(h1+h2))]*n2/(Ic*b2t)
+T[(x>Xc)&(x>(h1+h2))]=V*q[(x>Xc)&(x>(h1+h2))]*n3/(Ic*b3t)
+print(T)
 
 Yi = np.zeros_like(x)
 S1 = np.zeros_like(x)
 S2 = np.zeros_like(x)
-Yi[(x<=Xc)&(x<=h1)] = Xc-x[(x<Xc)&(x<h1)]
+Yi[(x<=Xc)&(x<=h1)] = Xc-x[(x<=Xc)&(x<=h1)]
 Yi[(x<=Xc)&(x>h1)] = Xc-x[(x<=Xc)&(x>h1)]
 Yi[(x>Xc)&(x<=(h1+h2))] = Xc-x[(x>Xc)&(x<=(h1+h2))]
 Yi[(x>Xc)&(x>(h1+h2))] = Xc-x[(x>Xc)&(x>(h1+h2))]
-S1[(x<=Xc)&(x<=h1)] = M*Yi[(x<=Xc)&(x<=h1)]/Ic
-S1[(x<=Xc)&(x>h1)] = M*Yi[(x<=Xc)&(x>h1)]/Ic
-S2[(x>Xc)&(x<=(h1+h2))] = M*Yi[(x>Xc)&(x<=(h1+h2))]/Ic
-S2[(x>Xc)&(x>(h1+h2))] = M*Yi[(x>Xc)&(x>(h1+h2))]/Ic
-
+S1[(x<=Xc)&(x<=h1)] = M*Yi[(x<=Xc)&(x<=h1)]*n1/Ic
+S1[(x<=Xc)&(x>h1)] = M*Yi[(x<=Xc)&(x>h1)]*n2/Ic
+S2[(x>Xc)&(x<=(h1+h2))] = M*Yi[(x>Xc)&(x<=(h1+h2))]*n2/Ic
+S2[(x>Xc)&(x>(h1+h2))] = M*Yi[(x>Xc)&(x>(h1+h2))]*n3/Ic
+print(S1)
+print(S2)
 
 plt.style.use("classic")
 plt.subplot(1,2,1)
