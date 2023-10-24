@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 V=float(10)
+M=float(10)
 print(type(V))
 b1=0.2
-b2=0.1
+b2=0.2
 b3=0.2
 h1=0.15
 h2=0.3
@@ -41,11 +42,40 @@ T[(x<=Xc)&(x>h1)]=V*q[(x<=Xc)&(x>h1)]/(Ic*b2)
 T[(x>Xc)&(x<=(h1+h2))]=V*q[(x>Xc)&(x<=(h1+h2))]/(Ic*b2)
 T[(x>Xc)&(x>(h1+h2))]=V*q[(x>Xc)&(x>(h1+h2))]/(Ic*b3)
 
-plt.plot(T, x, label='Shear Stress')
-plt.axis((0,np.max(T)+10,0,h))
+Yi = np.zeros_like(x)
+S1 = np.zeros_like(x)
+S2 = np.zeros_like(x)
+Yi[(x<=Xc)&(x<=h1)] = Xc-x[(x<Xc)&(x<h1)]
+Yi[(x<=Xc)&(x>h1)] = Xc-x[(x<=Xc)&(x>h1)]
+Yi[(x>Xc)&(x<=(h1+h2))] = Xc-x[(x>Xc)&(x<=(h1+h2))]
+Yi[(x>Xc)&(x>(h1+h2))] = Xc-x[(x>Xc)&(x>(h1+h2))]
+S1[(x<=Xc)&(x<=h1)] = M*Yi[(x<=Xc)&(x<=h1)]/Ic
+S1[(x<=Xc)&(x>h1)] = M*Yi[(x<=Xc)&(x>h1)]/Ic
+S2[(x>Xc)&(x<=(h1+h2))] = M*Yi[(x>Xc)&(x<=(h1+h2))]/Ic
+S2[(x>Xc)&(x>(h1+h2))] = M*Yi[(x>Xc)&(x>(h1+h2))]/Ic
+
+
+plt.style.use("classic")
+plt.subplot(1,2,1)
+plt.plot(T, x, label='Shear Stress', linewidth=3,color='blue')
 plt.xlabel('Shear stress [KPa]')
 plt.ylabel('Beam height [m]')
 plt.title('Shear stress distribution on Beam section')
 plt.grid(True)
 plt.legend()
+plt.gcf().set_size_inches(10,6)
+plt.fill_betweenx(x,T,alpha=0.2,color='blue')
+#plt.show()
+plt.subplot(1,2,2)
+plt.plot(S1, x, label='Axial Stress', linewidth=3,color='blue')
+plt.plot(S2, x, label='Axial Stress', linewidth=3,color='red')
+plt.xlabel('Axial stress [KPa]')
+plt.ylabel('Beam height [m]')
+plt.title('Axial stress distribution on Beam section')
+plt.grid(True)
+plt.legend()
+plt.gcf().set_size_inches(10,6)
+plt.fill_betweenx(x,0,S1,alpha=0.2,color='blue')
+plt.fill_betweenx(x,S2,h,alpha=0.2,color='red')
+#plt.fill(S,x)
 plt.show()
