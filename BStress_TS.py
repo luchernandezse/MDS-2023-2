@@ -1,19 +1,19 @@
 import matplotlib.pyplot as plt
 import numpy as np
-V=float(10)
-M=float(10)
+V=float(-33.75)
+M=float(-50.63)
 print(type(V))
 #Los materiales van de abajo hacia arriba.
-b1=0.1
-b2=0.1
-b3=0.1
-h1=0.08
-h2=0.08
-h3=0.08
+b1=0.3
+b2=0.3
+b3=0.3
+h1=0.3
+h2=0.15
+h3=0.15
 h=h1+h2+h3
-E1=200000000 #[Kpa]
-E2=21500000 #[Kpa]
-E3=2000000000 #[Kpa]
+E1=10000 #[Kpa]
+E2=20000 #[Kpa]
+E3=20000 #[Kpa]
 #Se transforma todo al material 3
 n1=E1/E3
 n2=E2/E3
