@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+
 ## ------ SPECIFY STRESSES ON MOHR CIRCLE ------ ##
 Ox=-50   #Axial x Stress
 Oy=0    #Axial x Stress
